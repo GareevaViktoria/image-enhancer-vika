@@ -10,6 +10,7 @@ const viewer = $('viewer'), imgBefore = $('imgBefore'), imgAfter = $('imgAfter')
 const params = $('params'), pBright = $('pBright'), pContrast = $('pContrast'), pSat = $('pSat');
 const actions = $('actions'), btnDownload = $('download'), btnAgain = $('again'), btnCancel = $('cancel');
 const err = $('err'), compare = $('compare'), handle = $('handle');
+const quality = $('quality');
 
 let currentTask = null, resultBlob = null, srcName = 'image';
 
@@ -39,10 +40,10 @@ enhancer.addEventListener('statusChange', async (e) => {
   if (status === 'processing') btnCancel.style.display = '';
   if (status === 'done') {
     btnCancel.style.display = 'none';
-    const { blob, params: p } = await enhancer.getResult(taskId);
+    const { blob, display } = await enhancer.getResult(taskId);
     resultBlob = blob;
     imgAfter.src = URL.createObjectURL(blob);
-    showParams(p);
+    showParams(display);
     viewer.classList.add('on');
     params.classList.add('on');
     actions.style.display = 'flex';
@@ -57,10 +58,10 @@ enhancer.addEventListener('statusChange', async (e) => {
   }
 });
 
-function showParams(p) {
-  const br = Math.round(p.brightness * 100);
-  const co = Math.round((p.contrast - 1) * 100);
-  const sa = Math.round((p.saturation - 1) * 100);
+function showParams(d) {
+  const br = d?.brightness ?? 0;
+  const co = d?.contrast ?? 0;
+  const sa = d?.saturation ?? 0;
   const fmt = (v) => (v > 0 ? '+' : '') + v + '%';
   pBright.textContent = fmt(br);
   pContrast.textContent = fmt(co);
@@ -68,6 +69,15 @@ function showParams(p) {
   pBright.className = 'v' + (br >= 0 ? ' pos' : '');
   pContrast.className = 'v' + (co >= 0 ? ' pos' : '');
   pSat.className = 'v' + (sa >= 0 ? ' pos' : '');
+
+  // Объективная оценка качества до и после коррекции.
+  if (d && d.qAfter !== null && d.qAfter !== undefined) {
+    quality.innerHTML = 'Оценка качества: <b>' + d.qBefore + '</b> → <b>' + d.qAfter +
+      '</b> из 100 <span class="up">(+' + d.qGain + ')</span><br>' +
+      'Учитывались охват тонального диапазона, экспозиция, контраст, ' +
+      'цветность и сохранность деталей в светах и тенях.';
+    quality.classList.add('on');
+  }
 }
 
 async function handleFile(file) {
@@ -76,6 +86,7 @@ async function handleFile(file) {
   drop.style.display = 'none';
   viewer.classList.remove('on');
   params.classList.remove('on');
+  quality.classList.remove('on');
   actions.style.display = 'none';
   resultBlob = null;
   srcName = (file.name || 'image').replace(/\.[^.]+$/, '');
@@ -118,6 +129,7 @@ btnAgain.addEventListener('click', () => {
   drop.style.display = '';
   viewer.classList.remove('on');
   params.classList.remove('on');
+  quality.classList.remove('on');
   prog.classList.remove('on');
   actions.style.display = 'none';
   fileInput.value = '';

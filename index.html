@@ -129,6 +129,14 @@
   .btn-danger:hover{background:rgba(229,100,106,.08)}
   button:disabled{opacity:.4;cursor:not-allowed}
 
+  .quality{
+    display:none;margin:0 14px 16px;padding:12px 14px;border-radius:8px;
+    background:rgba(79,214,200,.06);border:1px solid rgba(79,214,200,.22);
+    font-size:13px;color:var(--ink-dim)}
+  .quality.on{display:block}
+  .quality b{font-family:var(--mono);color:var(--cyan);font-weight:500}
+  .quality .up{color:var(--amber)}
+
   .err{display:none;color:var(--danger);font-size:13px;padding:0 16px 14px;
     font-family:var(--mono)}
   .err.on{display:block}
@@ -204,6 +212,8 @@
       <div class="param"><div class="k">Контраст</div><div class="v" id="pContrast">—</div></div>
       <div class="param"><div class="k">Цветность</div><div class="v" id="pSat">—</div></div>
     </div>
+
+    <div class="quality" id="quality"></div>
 
     <div class="err" id="err"></div>
 

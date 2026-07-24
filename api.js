@@ -27,7 +27,7 @@ export class ImageEnhancer extends EventTarget {
         this._resolve('cancel:' + m.taskId, { success: m.success });
       } else if (m.type === 'resultData') {
         this._resolve('result:' + m.taskId, m.blob
-          ? { blob: m.blob, params: m.params }
+          ? { blob: m.blob, params: m.params, display: m.display }
           : Promise.reject(new Error(m.error || 'no result')));
       }
     };
