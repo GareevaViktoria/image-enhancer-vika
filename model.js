@@ -109,7 +109,8 @@ export class EnhancementModel {
   // Возвращает { brightness, contrast, saturation } — множители/сдвиги.
   async predict(features) {
     const tf = self.tf;
-    if (!this.ready) await this.calibrate(features);
+    // калибруем под каждое изображение: сеть подстраивается под его статистику
+    await this.calibrate(features);
     const x = tf.tensor2d([features]);
     const out = this.net.predict(x);
     const arr = await out.data();

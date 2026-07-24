@@ -11,7 +11,9 @@ import { EnhancementModel } from './model.js';
 let tfReady = (async () => {
   const tf = await import('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/+esm');
   self.tf = tf;
-  try { await tf.setBackend('webgl'); } catch (e) { await tf.setBackend('cpu'); }
+  let ok = false;
+  try { ok = await tf.setBackend('webgl'); } catch (e) { ok = false; }
+  if (!ok) { try { await tf.setBackend('cpu'); } catch (e) {} }
   await tf.ready();
 })();
 
@@ -72,7 +74,10 @@ function compile(gl, type, src) {
 
 function applyWebGL(bitmap, params) {
   const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
-  const gl = canvas.getContext('webgl', { premultipliedAlpha: false });
+  const gl = canvas.getContext('webgl', {
+    premultipliedAlpha: false,
+    preserveDrawingBuffer: true   // иначе буфер очистится до чтения результата
+  });
   if (!gl) return applyCPU(bitmap, params); // fallback
 
   const prog = gl.createProgram();

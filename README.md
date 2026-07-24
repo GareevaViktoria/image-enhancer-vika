@@ -54,12 +54,15 @@ npx serve
 
 ```
 index.html          интерфейс (drag-drop, слайдер до/после, прогресс)
-js/app.js           связка UI с API
-js/api.js           публичный API-модуль (контракт ТЗ)
-js/worker.js        фоновый поток: TF.js + WebGL-коррекция
-js/model.js         ML-модель подбора параметров
-vendor/heic2any.min.js   декодер HEIC
+app.js              связка UI с API
+api.js              публичный API-модуль (контракт ТЗ)
+worker.js           фоновый поток: TF.js + WebGL-коррекция
+model.js            ML-модель подбора параметров
+heic2any.min.js     декодер HEIC
 ```
+
+Все файлы лежат в одной папке (без вложенных директорий) — так проще
+загружать через веб-интерфейс GitHub.
 
 ## Как это работает по шагам
 
